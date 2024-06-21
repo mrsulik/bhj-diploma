@@ -11,12 +11,11 @@ class UserWidget {
    * Если переданный элемент не существует,
    * необходимо выкинуть ошибку.
    * */
-  constructor(element) {
-    if (element) {
-      this.element = element.querySelector('.user-name');
-    } else {
-      throw new Error('В UserWidget передан пустой элемент');
+  constructor(element){
+    if (!element) {
+      throw new Error (`Error empty ${element} in class UserWidget`)
     }
+    this.element = element;
   }
 
   /**
@@ -26,10 +25,10 @@ class UserWidget {
    * в элемент .user-name устанавливает имя
    * авторизованного пользователя
    * */
-  update() {
-    const user = User.current();
-    let userObj = JSON.parse(user);
-
-    this.element.textContent = userObj.name;
+  update(){
+    if (!User.current()) {
+      return 
+    }
+    this.element.querySelector('.user-name').textContent = User.current().name;
   }
 }

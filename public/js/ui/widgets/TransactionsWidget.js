@@ -11,9 +11,11 @@ class TransactionsWidget {
    * Если переданный элемент не существует,
    * необходимо выкинуть ошибку.
    * */
-  constructor(element) {
+  constructor( element ) {
+    if (!element) {
+      throw new Error (`Error empty ${element} in class TransactionsWidget`)
+    }
     this.element = element;
-
     this.registerEvents();
   }
   /**
@@ -23,20 +25,13 @@ class TransactionsWidget {
    * экземпляра окна
    * */
   registerEvents() {
-    this.element.addEventListener('click', (e) => {
-      if (e.target.closest('.create-income-button')) {
-        const modalIncome = new Modal(App.modals.newIncome.activeElement);
-        modalIncome.open();
-
-        modalIncome.registerEvents();
-      }
-
-      if (e.target.closest('.create-expense-button')) {
-        const modalExpense = new Modal(App.modals.newExpense.activeElement);
-        modalExpense.open();
-
-        modalExpense.registerEvents();
-      }
-    });
+    this.element.querySelector( '.create-income-button' ).onclick = (e) => {
+      e.preventDefault();
+      App.getModal('newIncome').open();
+    }
+    this.element.querySelector( '.create-expense-button' ).onclick = (e) => {
+      e.preventDefault();
+      App.getModal('newExpense').open();
+    }
   }
 }

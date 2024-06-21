@@ -3,7 +3,6 @@
  * кнопки скрытия/показа колонки в мобильной версии сайта
  * и за кнопки меню
  * */
-
 class Sidebar {
   /**
    * Запускает initAuthLinks и initToggleButton
@@ -20,6 +19,7 @@ class Sidebar {
    * */
   static initToggleButton() {
     document.querySelector('.sidebar-toggle').addEventListener('click', (e) => {
+      e.preventDefault();
       document.body.classList.toggle('sidebar-open');
       document.body.classList.toggle('sidebar-collapse');
     });
@@ -33,37 +33,28 @@ class Sidebar {
    * выходу устанавливает App.setState( 'init' )
    * */
   static initAuthLinks() {
-    document.querySelector('.menu-item_login > a').addEventListener('click', (e) => {
-      e.preventDefault();
-      let el = App.getModal('login');
+    const itemRegister = document.querySelector('.menu-item_register');
+    const itemLogin = document.querySelector('.menu-item_login');
+    const logout = document.querySelector('.menu-item_logout');
 
-      const modalLogin = new Modal(el.activeElement);
-      modalLogin.open();
-
-      modalLogin.registerEvents();
+    itemRegister.addEventListener('click', (e) => {
+        e.preventDefault();
+        App.getModal('register').open();
     });
 
-    document.querySelector('.menu-item_register > a').addEventListener('click', (e) => {
-      e.preventDefault();
-      let el = App.getModal('register');
-
-      const modalRegister = new Modal(el.activeElement);
-      modalRegister.open();
-
-      modalRegister.registerEvents();
+    itemLogin.addEventListener('click', (e) => {
+        e.preventDefault();
+        App.getModal('login').open();
     });
 
-    document.querySelector('.menu-item_logout > a').addEventListener('click', (e) => {
+    logout.addEventListener('click', (e) => {
       e.preventDefault();
+      User.logout({}, (err, response) => {
+          if (err === null && response.success) {
+            App.setState('init');
+          }
+      });
+   });
 
-      const callback = (err, response) => {
-        if (response.success) {
-          App.setState('init');
-          User.unsetCurrent();
-        }
-      };
-
-      User.logout(callback);
-    });
   }
 }
